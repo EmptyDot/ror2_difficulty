@@ -24,7 +24,6 @@ myrun = GenerateRun(6, 1, 3, loops=1)
 if __name__ == '__main__':
     """run script"""
 
-    #PlotAllRuns().show()
-    PlotRun(myrun, 'minutes', 'difficulty').show()
+    print(myrun.run('minutes', 'difficulty'))
 
 
