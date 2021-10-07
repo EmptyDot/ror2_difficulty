@@ -1,6 +1,4 @@
-import numpy as np
 import math
-from typing import Literal
 
 
 class GenerateRun:
@@ -13,14 +11,16 @@ class GenerateRun:
 
         self.current_time = 0
         self.stages_completed: int
-        self.x_axis, self.y_axis = self.get_axes(axis_name=x_name), self.get_axes(axis_name=y_name)
+
         self.player_factor = 1 + 0.3 * (self.player_count - 1)
         self.time_factor = 0.0506 * self.difficulty_value * self.player_count ** 0.2
 
-    def run(self, x_name, y_name) -> tuple[list, list]:
+        self.x = []
+        self.y = []
 
-        x, y = [], []
-
+    def generate_lists(self, x_name, y_name) -> tuple[list, list]:
+        """Create and return the lists corresponding with x_name and y_name"""
+        x_axis, y_axis = self.get_axes(axis_name=x_name), self.get_axes(axis_name=y_name)
         for i in (x_name, y_name):
             if i not in self.get_axes().keys():
                 raise KeyError(f"The argument '{i}' is not supported as an axis. "
@@ -29,12 +29,18 @@ class GenerateRun:
 
             while self.check_if_run_ongoing():
                 """this will update once for every second"""
-                x.append(x_axis())
-                y.append(y_axis())
+                self.x.append(x_axis())
+                self.y.append(y_axis())
                 self.current_time += 1
-            return x, y
+
+        return self.x, self.y
 
     def get_axes(self, axis_name=None):
+        """
+        return the specified func or return the whole dict if axis_name is not specified
+        :param axis_name: str
+        :return: dict or func
+        """
         axes = {
             'seconds': self.get_current_time_seconds,
             'minutes': self.get_current_time_minutes,
@@ -46,10 +52,16 @@ class GenerateRun:
         else:
             return axes
 
-    def get_current_time_seconds(self):
+    def get_x(self) -> list:
+        return self.x
+
+    def get_y(self) -> list:
+        return self.y
+
+    def get_current_time_seconds(self) -> int:
         return self.current_time
 
-    def get_current_time_minutes(self):
+    def get_current_time_minutes(self) -> float:
         return self.current_time / 60
 
     # TODO implement chest costs as axes
@@ -82,7 +94,7 @@ class GenerateRun:
     def get_enemy_level(self):
         return math.floor(1 + (self.get_diff_coeff() - self.player_factor) / 0.33)
 
-    # TODO create a separate class for max funcs
+    # TODO create a separate class for max funcs. Are these even required?
     def get_max_stages(self):
         return 6 * self.loops
 

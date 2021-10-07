@@ -10,8 +10,6 @@ class PlotRun:
         self.run = run
         self.x_name = x_name
         self.y_name = y_name
-        self.biggest_y = 0
-        self.biggest_y_run: GenerateRun
 
     def plot(self) -> None:
         """
@@ -21,21 +19,24 @@ class PlotRun:
         -------
         """
         if type(self.run) == list:
+            biggest_y = 0
+            biggest_y_run: GenerateRun
             for this_run in self.run:
                 self.plot_run(this_run)
-                if this_run.get_axis(self.y_name)() > self.biggest_y:
-                    self.biggest_y = this_run.get_axis(self.y_name)()
-                    self.biggest_y_run = this_run
-            self.set_yticks(self.biggest_y_run)
+                if this_run.y[-1] > biggest_y:
+                    biggest_y = this_run.get_axes(self.y_name)()
+                    biggest_y_run = this_run
+            # self.set_yticks(self.biggest_y_run)
 
         else:
             self.plot_run(self.run)
-            self.set_yticks(self.run)
+            # self.set_yticks(self.run)
 
         plt.tight_layout(pad=2)
         self.ax.grid()
-        self.ax.set_xlabel(self.x_name.capitalize())
-        self.ax.set_ylabel(self.y_name.capitalize())
+
+        self.ax.set_xlabel(self.x_name.capitalize().replace('_', ' '))
+        self.ax.set_ylabel(self.y_name.capitalize().replace('_', ' '))
 
     def show(self) -> None:
         """
@@ -58,9 +59,11 @@ class PlotRun:
         Returns None
         -------
         """
-        x, y = run.run(self.x_name, self.y_name)
+        x, y = run.generate_lists(self.x_name, self.y_name)
 
-        plot_color = Color(run).get_rgb_color()
+        mps, pc, diff = run.get_arg_info()
+        plot_color = Color(mps, pc, diff).get_rgb_color()
+        # TODO rewrite labels to fit any given axis
         self.ax.plot(x, y,
                      color=plot_color,
                      label=f'mps: {run.minutes_per_stage}, pc: {run.player_count}, diff: {run.difficulty_value}')

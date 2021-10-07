@@ -19,11 +19,12 @@ Supported axes are:
 
 myruns = [GenerateRun(4, 3, 2, loops=1), GenerateRun(6, 2, 1, loops=3), GenerateRun(8, 4, 3, loops=1)]
 myrun = GenerateRun(6, 1, 3, loops=1)
+yourrun = GenerateRun(8, 1, 2)
 
 
 if __name__ == '__main__':
     """run script"""
+    fig, ax = plt.subplots()
+    PlotRun(myrun, 'minutes', 'enemy_level', ax=ax).plot()
 
-    print(myrun.run('minutes', 'difficulty'))
-
-
+    plt.show()
