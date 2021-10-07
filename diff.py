@@ -1,10 +1,9 @@
 import numpy as np
 import math
-
+from typing import Literal
 
 
 class GenerateRun:
-
 
     def __init__(self, minutes_per_stage: [int, float], player_count: int, difficuly_value: int, loops: int = 1):
         self.minutes_per_stage = minutes_per_stage
@@ -13,39 +12,39 @@ class GenerateRun:
         self.loops = loops
 
         self.current_time = 0
-        self.stages_completed = 0
-
-        self.enemy_level = 1
-
+        self.stages_completed: int
+        self.x_axis, self.y_axis = self.get_axes(axis_name=x_name), self.get_axes(axis_name=y_name)
         self.player_factor = 1 + 0.3 * (self.player_count - 1)
         self.time_factor = 0.0506 * self.difficulty_value * self.player_count ** 0.2
 
     def run(self, x_name, y_name) -> tuple[list, list]:
+
         x, y = [], []
 
+        for i in (x_name, y_name):
+            if i not in self.get_axes().keys():
+                raise KeyError(f"The argument '{i}' is not supported as an axis. "
+                               f"Supported axes are: {[i for i in self.get_axes().keys()]}")
+        else:
+
+            while self.check_if_run_ongoing():
+                """this will update once for every second"""
+                x.append(x_axis())
+                y.append(y_axis())
+                self.current_time += 1
+            return x, y
+
+    def get_axes(self, axis_name=None):
         axes = {
             'seconds': self.get_current_time_seconds,
             'minutes': self.get_current_time_minutes,
             'difficulty': self.get_diff_coeff,
             'enemy_level': self.get_enemy_level,
         }
-
-        try:
-            x_axis, y_axis = axes[x_name], axes[y_name]
-        except KeyError as ke:
-            if x_name not in axes.keys():
-                raise f'{x_name} is not supported as an axis. supported axes are: {axes.keys()}\n {ke}'
-            if y_name not in axes.keys():
-                raise f'{y_name} is not supported as an axis. supported axes are: {axes.keys()}\n {ke}'
+        if axis_name is not None:
+            return axes[axis_name]
         else:
-            while self.check_if_run_ongoing():
-
-                """this will update once for every second"""
-                x.append(x_axis())
-                y.append(y_axis())
-                self.current_time += 1
-
-            return x, y
+            return axes
 
     def get_current_time_seconds(self):
         return self.current_time

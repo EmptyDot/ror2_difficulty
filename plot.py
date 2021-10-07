@@ -5,13 +5,13 @@ import math
 
 
 class PlotRun:
-    def __init__(self, run: [list, GenerateRun], x_name, y_name, ax=None):
+    def __init__(self, run: [list, GenerateRun], x_name: str, y_name: str, ax=None):
         self.ax = plt.subplots()[1] if ax is None else ax
         self.run = run
         self.x_name = x_name
         self.y_name = y_name
-        self.biggest_coeff = 0
-        self.hardest_run = ''
+        self.biggest_y = 0
+        self.biggest_y_run: GenerateRun
 
     def plot(self) -> None:
         """
@@ -21,12 +21,12 @@ class PlotRun:
         -------
         """
         if type(self.run) == list:
-            for i in self.run:
-                self.plot_run(i)
-                if i.get_max_coeff() > self.biggest_coeff:
-                    self.biggest_coeff = i.get_max_coeff()
-                    self.hardest_run = i
-            self.set_yticks(self.hardest_run)
+            for this_run in self.run:
+                self.plot_run(this_run)
+                if this_run.get_axis(self.y_name)() > self.biggest_y:
+                    self.biggest_y = this_run.get_axis(self.y_name)()
+                    self.biggest_y_run = this_run
+            self.set_yticks(self.biggest_y_run)
 
         else:
             self.plot_run(self.run)
@@ -34,8 +34,8 @@ class PlotRun:
 
         plt.tight_layout(pad=2)
         self.ax.grid()
-        self.ax.set_xlabel('Time (minutes)')
-        self.ax.set_ylabel('Difficulty')
+        self.ax.set_xlabel(self.x_name.capitalize())
+        self.ax.set_ylabel(self.y_name.capitalize())
 
     def show(self) -> None:
         """
@@ -69,6 +69,8 @@ class PlotRun:
                      label=f't: {round(x[-1], 2)}min, dc: {round(y[-1], 3)}')
         self.ax.legend()
 
+
+    # TODO Look at THIS. Needs to be rewritten.
     def set_yticks(self, run: GenerateRun) -> None:
         """
         assigns ticks and tick labels to self.ax
