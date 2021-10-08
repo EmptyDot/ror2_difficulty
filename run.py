@@ -18,8 +18,13 @@ class GenerateRun:
         self.x = []
         self.y = []
 
-    def generate_lists(self, x_name, y_name) -> tuple[list, list]:
-        """Create and return the lists corresponding with x_name and y_name"""
+    def generate_lists(self, x_name: str, y_name: str) -> tuple[list, list]:
+        """
+        Create and return the lists corresponding with x_name and y_name
+        :param x_name: name of x-axis, used as key in get_axes
+        :param y_name: name of y-axis, used as key in get_axes
+        :return: tuple[list, list] of values for x and y
+        """
         x_axis, y_axis = self.get_axes(axis_name=x_name), self.get_axes(axis_name=y_name)
         for i in (x_name, y_name):
             if i not in self.get_axes().keys():
@@ -46,22 +51,36 @@ class GenerateRun:
             'minutes': self.get_current_time_minutes,
             'difficulty': self.get_diff_coeff,
             'enemy_level': self.get_enemy_level,
+            'cost_small_chest':
         }
+
         if axis_name is not None:
             return axes[axis_name]
         else:
             return axes
 
     def get_x(self) -> list:
+        """
+        :return: list of x values
+        """
         return self.x
 
     def get_y(self) -> list:
+        """
+        :return: list of y values
+        """
         return self.y
 
     def get_current_time_seconds(self) -> int:
+        """
+        :return: int
+        """
         return self.current_time
 
     def get_current_time_minutes(self) -> float:
+        """
+        :return: float
+        """
         return self.current_time / 60
 
     # TODO implement chest costs as axes

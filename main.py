@@ -1,6 +1,6 @@
 from diff import GenerateRun
-from plot import *
-
+from plot import PlotRun
+import matplotlib.pyplot as plt
 """
 GenerateRun contains all the information
 we pass this object around to all other classes
@@ -25,6 +25,6 @@ yourrun = GenerateRun(8, 1, 2)
 if __name__ == '__main__':
     """run script"""
     fig, ax = plt.subplots()
-    PlotRun(myrun, 'minutes', 'enemy_level', ax=ax).plot()
+    # PlotRun(myrun, 'minutes', 'enemy_level', ax=ax).plot()
 
     plt.show()

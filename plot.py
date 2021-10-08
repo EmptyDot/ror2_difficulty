@@ -14,9 +14,7 @@ class PlotRun:
     def plot(self) -> None:
         """
         checks if self.run is list and passes each element to self.plot_run, also sets x/y-labels
-
-        Returns None
-        -------
+        :return: None
         """
         if type(self.run) == list:
             biggest_y = 0
@@ -38,38 +36,31 @@ class PlotRun:
         self.ax.set_xlabel(self.x_name.capitalize().replace('_', ' '))
         self.ax.set_ylabel(self.y_name.capitalize().replace('_', ' '))
 
-    def show(self) -> None:
+    def show(self):
         """
         create and show the plot
-
-        Returns None
-        -------
-
+        :return: None
         """
         self.plot()
         plt.show()
 
-    def plot_run(self, run: GenerateRun) -> None:
+    def plot_run(self, run: GenerateRun):
         """
         plots the line and the end point and creates the legend
-
-        Parameters
-        ----------
-        run: GenerateRun
-        Returns None
-        -------
+        :param run: GenerateRun
+        :return: None
         """
         x, y = run.generate_lists(self.x_name, self.y_name)
 
         mps, pc, diff = run.get_arg_info()
         plot_color = Color(mps, pc, diff).get_rgb_color()
-        # TODO rewrite labels to fit any given axis
+
         self.ax.plot(x, y,
                      color=plot_color,
                      label=f'mps: {run.minutes_per_stage}, pc: {run.player_count}, diff: {run.difficulty_value}')
         self.ax.plot(x[-1], y[-1], 'o',
                      color=plot_color,
-                     label=f't: {round(x[-1], 2)}min, dc: {round(y[-1], 3)}')
+                     label=f'{self.x_name}: {round(x[-1], 2)}, {self.y_name}: {round(y[-1], 3)}')
         self.ax.legend()
 
 
