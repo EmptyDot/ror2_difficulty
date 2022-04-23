@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from diff import GenerateRun
+from run import GenerateRun
 from color import Color
 import math
 

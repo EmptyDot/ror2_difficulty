@@ -10,7 +10,7 @@ class GenerateRun:
         self.loops = loops
 
         self.current_time = 0
-        self.stages_completed: int
+        self.stages_completed = self.get_stages_completed()
 
         self.player_factor = 1 + 0.3 * (self.player_count - 1)
         self.time_factor = 0.0506 * self.difficulty_value * self.player_count ** 0.2
@@ -51,7 +51,6 @@ class GenerateRun:
             'minutes': self.get_current_time_minutes,
             'difficulty': self.get_diff_coeff,
             'enemy_level': self.get_enemy_level,
-            'cost_small_chest':
         }
 
         if axis_name is not None:
