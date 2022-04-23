@@ -9,15 +9,20 @@ ex. PlotRun(myrun, x='time' y='difficulty')
 standard values for axes are: x='time', y='difficulty'
 
 Supported axes are: 
-    'time', 'difficulty', 'enemy_level'
-    extended support includes: 'price_shrine', 'price_small_chest', 'price_large_chest', 'director_currency', 
+    'time', 
+    'difficulty', 
+    'enemy_level', 
+    'price_small_chest', 
+    'price_large_chest', 
+    'price_legendary_chest', 
+    'price_equipment_chest', 
+    'price_category_chest', 
+    'price_adaptive_chest'
+    
+    future support includes: 'price_shrine',  'director_currency', 
 
 
 """
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -26,8 +31,8 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
 
     myruns = [GenerateRun(4, 3, 2, loops=1), GenerateRun(6, 2, 1, loops=3), GenerateRun(8, 4, 3, loops=1)]
-    myrun = GenerateRun(6, 1, 3, loops=1)
+    myrun = GenerateRun(5, 1, 3, loops=1)
     yourrun = GenerateRun(8, 1, 2)
-    PlotRun(myrun, 'minutes', 'enemy_level', ax=ax).plot()
+    PlotRun(myruns, 'minutes', 'price_adaptive_chest', ax=ax).plot()
 
     plt.show()

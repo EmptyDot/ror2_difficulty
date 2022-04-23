@@ -1,5 +1,6 @@
 import math
-
+import warnings
+from typing import Union, Iterable
 
 class GenerateRun:
 
@@ -26,37 +27,36 @@ class GenerateRun:
         :return: tuple[list, list] of values for x and y
         """
         x_axis, y_axis = self.get_axes(axis_name=x_name), self.get_axes(axis_name=y_name)
-        for i in (x_name, y_name):
-            if i not in self.get_axes().keys():
-                raise KeyError(f"The argument '{i}' is not supported as an axis. "
-                               f"Supported axes are: {[i for i in self.get_axes().keys()]}")
-        else:
-
-            while self.check_if_run_ongoing():
-                """this will update once for every second"""
-                self.x.append(x_axis())
-                self.y.append(y_axis())
-                self.current_time += 1
+        while self.check_if_run_ongoing():
+            """this will update once for every second"""
+            self.x.append(x_axis())
+            self.y.append(y_axis())
+            self.current_time += 1
 
         return self.x, self.y
 
-    def get_axes(self, axis_name=None):
+    def get_axes(self, axis_name: str):
         """
-        return the specified func or return the whole dict if axis_name is not specified
         :param axis_name: str
-        :return: dict or func
+        :return: return the specified func
         """
         axes = {
             'seconds': self.get_current_time_seconds,
             'minutes': self.get_current_time_minutes,
             'difficulty': self.get_diff_coeff,
             'enemy_level': self.get_enemy_level,
+            'price_small_chest': self.get_money_cost(25),
+            'price_large_chest': self.get_money_cost(50),
+            'price_legendary_chest': self.get_money_cost(400),
+            'price_equipment_chest': self.get_money_cost(25),
+            'price_category_chest': self.get_money_cost(30),
+            'price_adaptive_chest': self.get_money_cost(50),
         }
-
-        if axis_name is not None:
-            return axes[axis_name]
-        else:
-            return axes
+        try:
+            axis = axes[axis_name]
+        except KeyError(f'the specified axis {axis_name} is not supported:\nsupported axes are {axes.keys()}') as exc:
+            raise exc
+        return axis
 
     def get_x(self) -> list:
         """
@@ -82,17 +82,12 @@ class GenerateRun:
         """
         return self.current_time / 60
 
-    # TODO implement chest costs as axes
-    def get_money_cost(self, key: str) -> int:
-        costs = {
-            'small': 25,
-            'large': 50,
-            'legendary': 400,
-            'equipment': 25,
-            'category': 30,
-            'adaptive': 50,
-        }
-        return int(costs[key] * self.get_diff_coeff()**1.25)
+    def get_money_cost(self, cost: int):
+        self.cost = cost
+        return self.money_cost
+
+    def money_cost(self):
+        return int(self.cost * self.get_diff_coeff() ** 1.25)
 
     def get_arg_info(self):
         return self.minutes_per_stage, self.player_count, self.difficulty_value
